@@ -3,6 +3,7 @@ import { useCart } from "../store/cart";
 import type { ProductCart } from "../types";
 import RemoveButton from "./buttons/RemoveButton";
 import Button from "./buttons/Button";
+import { useState } from "react";
 
 const DividerLine = () => <div className="w-full h-px bg-(--color-rose-100)" />
 
@@ -49,26 +50,43 @@ const CartView = ({
     </div>
 )
 
+const ProductCartModal = ({ products, onConfirmOrder }: { products: ProductCart[], onConfirmOrder: () => void }) => (
+    <div className="flex justify-center items-center fixed top-0 left-0 w-full h-full bg-[rgba(0,0,0,0.7)]">
+        <div className="bg-white p-(--spacing-300) rounded-(--spacing-100)">
+            This is modal content
+        </div>
+    </div>
+)
+
 const ProductCart = () => {
-    const { products, totalPrice, removeProduct } = useCart();
+    const { products, totalPrice, removeProduct, clearCart } = useCart();
+    const [modalOpen, setModalOpen] = useState(false);
 
     return (
-        <div id="cart" className="p-(--spacing-300) bg-white w-full min-w-69.75 xl:max-w-[384px] self-start">
-            <h3 className="text-preset-2 font-bold text-(--color-red)">{`Your Cart (${products.length})`}</h3>
-            {products.length > 0 ? (
-                <>
-                    <CartView products={products} onItemRemove={removeProduct} />
-                    <DividerLine />
-                    <div className="flex items-center justify-between text-(--color-rose-900) py-(--spacing-300)">
-                        <h4 className="text-preset-4">Order Total</h4>
-                        <span className="text-preset-2">{`$${totalPrice.toFixed(2)}`}</span>
-                    </div>
-                    <CartInfo />
-                    <Button className="w-full mt-(--spacing-300)">Confirm Order</Button>
-                </>
-            ) : <EmptyCart />}
+        <>
+            <div id="cart" className="p-(--spacing-300) bg-white w-full min-w-69.75 xl:max-w-[384px] self-start">
+                <h3 className="text-preset-2 font-bold text-(--color-red)">{`Your Cart (${products.length})`}</h3>
+                {products.length > 0 ? (
+                    <>
+                        <CartView products={products} onItemRemove={removeProduct} />
+                        <DividerLine />
+                        <div className="flex items-center justify-between text-(--color-rose-900) py-(--spacing-300)">
+                            <h4 className="text-preset-4">Order Total</h4>
+                            <span className="text-preset-2">{`$${totalPrice.toFixed(2)}`}</span>
+                        </div>
+                        <CartInfo />
+                        <Button className="w-full mt-(--spacing-300)" onClick={() => setModalOpen(true)}>
+                            Confirm Order
+                        </Button>
+                    </>
+                ) : <EmptyCart />}
+            </div>
 
-        </div>
+            {modalOpen && <ProductCartModal products={products} onConfirmOrder={() => {
+                clearCart();
+                setModalOpen(false);
+            }} />}
+        </>
     )
 }
 

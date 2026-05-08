@@ -8,6 +8,7 @@ type CartStore = {
     removeProduct: (name: string) => void;
     increaseCount: (name: string) => void;
     decreaseCount: (name: string) => void;
+    clearCart: () => void;
 }
 
 export const useCart = create<CartStore>()((set) => ({
@@ -41,5 +42,6 @@ export const useCart = create<CartStore>()((set) => ({
             } : product),
             totalPrice: state.totalPrice - (existingProduct?.price || 0)
         }
-    })
+    }),
+    clearCart: () => set({ products: [], totalPrice: 0 })
 }))
