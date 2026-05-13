@@ -8,10 +8,11 @@ export type ProductData = {
     name: string;
     category: string;
     price: number;
-}
+};
 
 export type ProductCart = {
     name: string;
     price: number;
     count: number;
-}
+    img: string;
+};
